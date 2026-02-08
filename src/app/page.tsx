@@ -26,12 +26,12 @@ function PlannerApp() {
             <button onClick={() => window.location.reload()} className="text-primary font-bold tracking-tight hover:opacity-80 transition-opacity">
               WanderForm
             </button>
-            <div className="h-6 w-px bg-border mx-2 hidden md:block" />
-            <h1 className="text-sm font-medium text-foreground hidden md:block">{trip.destination} · {trip.durationDays} Days</h1>
+            <div className="h-6 w-px bg-border mx-2 hidden lg:block" />
+            <h1 className="text-sm font-medium text-foreground hidden lg:block">{trip.destination} · {trip.durationDays} Days</h1>
           </div>
           <div className="flex items-center gap-2">
              <button
-               className="md:hidden p-2 text-muted-foreground hover:bg-muted rounded-full"
+               className="lg:hidden p-2 text-muted-foreground hover:bg-muted rounded-full"
                onClick={() => setShowMapMobile(!showMapMobile)}
              >
                {showMapMobile ? <ArrowLeft className="w-5 h-5" /> : <Map className="w-5 h-5" />}
@@ -46,7 +46,7 @@ function PlannerApp() {
         <div className="flex flex-1 overflow-hidden relative">
 
           {/* Timeline (Left/Center) */}
-          <div className={`flex-1 overflow-y-auto p-4 md:p-8 transition-opacity duration-300 ${showMapMobile ? 'opacity-0 pointer-events-none absolute inset-0' : 'opacity-100'}`}>
+          <div className={`flex-1 overflow-y-auto p-4 lg:p-8 transition-opacity duration-300 ${showMapMobile ? 'opacity-0 pointer-events-none absolute inset-0' : 'opacity-100'}`}>
             <div className="max-w-2xl mx-auto space-y-6 pb-20">
                <div className="mb-8">
                  <h2 className="text-3xl font-serif font-medium mb-2">Your Itinerary</h2>
@@ -61,8 +61,8 @@ function PlannerApp() {
 
           {/* Map & Tools (Right - Desktop / Overlay - Mobile) */}
           <div className={`
-            absolute inset-0 md:static md:w-[400px] lg:w-[450px] border-l border-border bg-white z-20 md:z-auto transition-transform duration-300 transform flex flex-col h-full
-            ${showMapMobile ? 'translate-x-0' : 'translate-x-full md:translate-x-0'}
+            absolute inset-0 lg:static lg:w-[450px] border-l border-border bg-white z-20 lg:z-auto transition-transform duration-300 transform flex flex-col h-full
+            ${showMapMobile ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'}
           `}>
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
               <div className="w-full h-[250px] shrink-0">
