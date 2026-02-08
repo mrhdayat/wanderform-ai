@@ -16,31 +16,32 @@ def verify_responsive():
 
         page_mobile.click("text=Start Planning")
         page_mobile.wait_for_selector("textarea")
+        page_mobile.fill("textarea", "Bali 6 days")
+        page_mobile.wait_for_timeout(1000) # Wait for chips logic
         page_mobile.screenshot(path="verification/resp_mobile_2_input.png")
 
-        page_mobile.fill("textarea", "Bali 6 days")
         page_mobile.click("text=Generate Journey")
 
-        # Wait for "Your Itinerary" which should be visible on mobile content area
         try:
-            page_mobile.wait_for_selector("text=Your Itinerary", timeout=20000)
-            page_mobile.wait_for_timeout(2000)
+            # Wait for "Your Journey" which is the new title
+            page_mobile.wait_for_selector("text=Your Journey", timeout=20000)
+            page_mobile.wait_for_timeout(2000) # Entrance animation
             page_mobile.screenshot(path="verification/resp_mobile_3_dashboard_timeline.png")
 
-            # Toggle Map
-            # The button is likely `button:has(svg.lucide-map)`
-            # In page.tsx: <button className="md:hidden ..."><Map ... /></button>
-            # Let's locate by role button with name/icon, or simpler selector
-            # The button has no text, just icon.
-            # Try finding button by class or hierarchy
-            map_btn = page_mobile.locator("header button:has(svg.lucide-map)")
+            # Toggle Map: The button is visible on small screens (lg:hidden)
+            # Find the button in header (it's the first button with map icon usually)
+            # Alternatively, select by aria-label or just try the first button in header
+            # Button has onClick handler and contains <Map /> icon
+            # It's inside header div > div (flex items-center gap-3) > button
+            # Let's target by svg class
+            map_btn = page_mobile.locator("header button svg.lucide-map").first
             if map_btn.is_visible():
                 map_btn.click()
-                page_mobile.wait_for_timeout(1000)
+                page_mobile.wait_for_timeout(1000) # Transition
                 page_mobile.screenshot(path="verification/resp_mobile_4_dashboard_map.png")
                 # Close map (it becomes ArrowLeft)
-                close_btn = page_mobile.locator("header button:has(svg.lucide-arrow-left)")
-                close_btn.click()
+                # close_btn = page_mobile.locator("header button svg.lucide-arrow-left").first
+                # close_btn.click()
             else:
                 print("Mobile map toggle button not found/visible.")
         except Exception as e:
@@ -60,7 +61,7 @@ def verify_responsive():
         page_tablet.click("text=Generate Journey")
 
         try:
-            page_tablet.wait_for_selector("text=Your Itinerary", timeout=20000)
+            page_tablet.wait_for_selector("text=Your Journey", timeout=20000)
             page_tablet.wait_for_timeout(2000)
             page_tablet.screenshot(path="verification/resp_tablet_3_dashboard.png")
         except Exception as e:
