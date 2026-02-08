@@ -11,17 +11,14 @@ export function BudgetInsight() {
     if (!trip) return { total: 0, categories: {} };
 
     const categories: Record<string, number> = {
-      accommodation: trip.budget.breakdown.accommodation, // Fixed base cost
+      accommodation: trip.budget.breakdown.accommodation,
       food: trip.budget.breakdown.food,
       transport: trip.budget.breakdown.transport,
       activities: 0
     };
 
-    // Sum up activities
     trip.days.forEach(day => {
       day.activities.forEach(act => {
-        // Simple mapping based on category or just aggregate 'activities'
-        // For this demo, let's assume activity price is always 'activities' or 'food'
         if (act.category === 'food') {
            categories.food += act.priceEstimate;
         } else {
@@ -40,36 +37,39 @@ export function BudgetInsight() {
   const isOverBudget = costs.total > trip.budget.total;
 
   return (
-    <div className="p-4 bg-white rounded-xl border border-border space-y-4">
-      <div className="flex justify-between items-baseline">
-        <h3 className="font-semibold text-foreground">Budget Overview</h3>
-        <span className={cn("text-sm font-medium", isOverBudget ? "text-error" : "text-success")}>
-          {(costs.total / 1000000).toFixed(1)}M / {(trip.budget.total / 1000000).toFixed(1)}M {trip.budget.currency}
+    <div className="p-6 bg-white rounded-2xl border border-border/40 shadow-subtle space-y-6">
+      <div className="flex flex-col gap-1">
+        <h3 className="text-lg font-semibold text-foreground tracking-tight">Budget Overview</h3>
+        <span className={cn("text-2xl font-bold tracking-tight", isOverBudget ? "text-error" : "text-success")}>
+          {(costs.total / 1000000).toFixed(1)}M <span className="text-sm font-medium text-muted-foreground font-normal">/ {(trip.budget.total / 1000000).toFixed(1)}M {trip.budget.currency}</span>
         </span>
       </div>
 
-      {/* Progress Bar */}
-      <div className="h-2 bg-muted rounded-full overflow-hidden">
+      {/* Minimal Progress Bar */}
+      <div className="h-1.5 bg-muted rounded-full overflow-hidden w-full">
         <div
-          className={cn("h-full transition-all duration-500", isOverBudget ? "bg-error" : "bg-primary")}
+          className={cn("h-full transition-all duration-700 ease-out rounded-full", isOverBudget ? "bg-error" : "bg-foreground")}
           style={{ width: `${percentage}%` }}
         />
       </div>
 
-      {/* Breakdown */}
-      <div className="space-y-2 text-sm">
+      {/* Clean Breakdown */}
+      <div className="space-y-3 pt-2">
         {Object.entries(costs.categories).map(([category, amount]) => (
-          <div key={category} className="flex justify-between text-muted-foreground">
-            <span className="capitalize">{category}</span>
-            <span>{(amount / 1000).toFixed(0)}k</span>
+          <div key={category} className="flex justify-between items-center text-sm group hover:bg-muted/30 p-2 rounded-lg transition-colors -mx-2">
+            <span className="capitalize text-muted-foreground font-medium flex items-center gap-2">
+                <span className={`w-2 h-2 rounded-full ${category === 'accommodation' ? 'bg-primary/80' : 'bg-muted-foreground/30'}`} />
+                {category}
+            </span>
+            <span className="font-semibold text-foreground tabular-nums tracking-wide">{(amount / 1000).toFixed(0)}k</span>
           </div>
         ))}
       </div>
 
-      <p className="text-xs text-muted-foreground pt-2 border-t border-border">
+      <p className="text-xs text-muted-foreground leading-relaxed pt-4 border-t border-border/40 font-light">
         {isOverBudget
           ? "You are slightly over budget. Consider replacing a fine dining dinner with a local warung."
-          : "Great job! You have room for extra souvenirs or an upgrade."}
+          : "You're on track. Great job managing your expenses."}
       </p>
     </div>
   );

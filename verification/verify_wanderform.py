@@ -4,12 +4,14 @@ def run():
     print("Launching browser...")
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
+        # Use a desktop viewport to ensure elements are visible
         page = browser.new_page(viewport={"width": 1280, "height": 800})
 
         # 1. Landing
         print("Navigating to landing...")
         page.goto("http://localhost:3000")
-        page.wait_for_selector("text=Plan your trip like a story")
+        # Updated selector for the redesign text
+        page.wait_for_selector("text=Plan your journey")
         page.screenshot(path="verification/1_landing.png")
         print("Captured landing.")
 
@@ -33,16 +35,7 @@ def run():
         page.click("text=Generate Journey")
 
         # 5. Thinking
-        # Wait for "Weaving your journey" (or loader)
-        # It's inside NarrativeInput when isLoading is true: "Weaving your journey..."
-        # But wait, logic:
-        # App state: showInput=true -> showInput=false (if isLoading?)
-        # Logic in page.tsx:
-        # if (isLoading) return <ThinkingState />
-        # NarrativeInput calls generateItinerary -> setIsLoading(true).
-        # So ThinkingState replaces Input immediately.
-        # ThinkingState has text "Understanding your travel style..." etc.
-        # Let's wait for "Understanding your travel style..."
+        # Wait for "Understanding your travel style"
         try:
             page.wait_for_selector("text=Understanding your travel style", timeout=5000)
             page.screenshot(path="verification/4_thinking.png")
@@ -52,7 +45,7 @@ def run():
 
         # 6. Dashboard
         print("Waiting for dashboard (Bali)...")
-        # Wait for "Bali, Indonesia"
+        # Wait for "Bali, Indonesia" which is in the header on desktop
         page.wait_for_selector("text=Bali, Indonesia", timeout=15000)
         page.wait_for_timeout(2000) # Wait for entrance animations
         page.screenshot(path="verification/5_dashboard.png")
